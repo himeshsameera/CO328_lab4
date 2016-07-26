@@ -2,6 +2,7 @@
 package lk.ac.pdn.co328.restapi;
 import lk.ac.pdn.co328.studentSystem.Student;
 import lk.ac.pdn.co328.studentSystem.StudentRegister;
+import lk.ac.pdn.co328.studentSystem.dbimplementation.DerbyStudentRegister;
 import org.jboss.resteasy.util.HttpResponseCodes;
 
 import javax.ws.rs.*;
@@ -12,18 +13,21 @@ import lk.ac.pdn.co328.studentSystem.arraylistimplementation.ArraylistStudentReg
 @Path("rest")
 public class StudentService
 {
-    private static StudentRegister register = new ArraylistStudentRegister();
+    private static StudentRegister register = new DerbyStudentRegister();
 
     @GET
     @Path("student/{id}")
-    // Uncommenting this will let the reciver know that you are sending a json
     @Produces( MediaType.APPLICATION_JSON + "," + MediaType.APPLICATION_XML )
     public Response viewStudent(@PathParam("id") int id) {
-        Student st = register.findStudent(id);
-        if(st == null){
-            return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
+        try {
+            Student st = register.findStudent(id);
+            if(st == null){
+                return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
+            }
+            return Response.status(HttpResponseCodes.SC_OK).entity(st).build();
+        } catch (Exception e) {
+            return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(HttpResponseCodes.SC_OK).entity(st).build();
     }
 
     @PUT
@@ -31,21 +35,18 @@ public class StudentService
     @Consumes("application/xml")
     public Response modifyStudent(@PathParam("id") int id, Student input)
     {
-        if(input == null) {
+        if(input != null) {
             try {
-                register.addStudent(input);
+                register.removeStudent(id);
             } catch (Exception e) {
                 e.printStackTrace();
-                return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
+                return Response.status(HttpResponseCodes.SC_FOUND).entity("Error! Cannot edit the Student.").build();
             }
-        }
-        else{
-            register.removeStudent(id);
             try {
                 register.addStudent(input);
             } catch (Exception e) {
                 e.printStackTrace();
-                return Response.status(HttpResponseCodes.SC_FOUND).entity("Error.Student is modified.").build();
+                return Response.status(HttpResponseCodes.SC_FOUND).entity("Error! Failure occurred while trying to edit the student").build();
             }
         }
         return Response.status(HttpResponseCodes.SC_OK).build();
@@ -53,17 +54,20 @@ public class StudentService
 
     @DELETE
     @Path("student/{id}")
-
     public Response deleteStudent(@PathParam("id") int id) {
-        if ((register.findStudent(id) != (null))) {
-            try {
-                register.removeStudent(id);
-               return Response.status(HttpResponseCodes.SC_OK).build();
-            } catch (Exception e) {
-                return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
+        try {
+            if ((register.findStudent(id) != (null))) {
+                try {
+                    register.removeStudent(id);
+                    return Response.status(HttpResponseCodes.SC_OK).build();
+                } catch (Exception e) {
+                    return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
+                }
+            }else {
+                return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
             }
-        }else {
-            return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
         }
     }
 
