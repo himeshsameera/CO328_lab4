@@ -24,7 +24,7 @@ public class StudentService
             if(st == null){
                 return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
             }
-            return Response.status(HttpResponseCodes.SC_OK).entity(st).build();
+            return Response.status(HttpResponseCodes.SC_FOUND).entity(st).build();
         } catch (Exception e) {
             return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
         }
@@ -32,7 +32,7 @@ public class StudentService
 
     @PUT
     @Path("student/{id}")
-    @Consumes("application/xml")
+    @Consumes(MediaType.APPLICATION_JSON + "," + MediaType.APPLICATION_XML)
     public Response modifyStudent(@PathParam("id") int id, Student input)
     {
         if(input != null) {
@@ -55,20 +55,12 @@ public class StudentService
     @DELETE
     @Path("student/{id}")
     public Response deleteStudent(@PathParam("id") int id) {
-        try {
-            if ((register.findStudent(id) != (null))) {
                 try {
                     register.removeStudent(id);
                     return Response.status(HttpResponseCodes.SC_OK).build();
                 } catch (Exception e) {
                     return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
                 }
-            }else {
-                return Response.status(HttpResponseCodes.SC_NOT_FOUND).build();
-            }
-        } catch (Exception e) {
-            return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
-        }
     }
 
     @POST
@@ -81,10 +73,10 @@ public class StudentService
                 return Response.status(HttpResponseCodes.SC_OK).build();
             } catch (Exception e) {
                 e.printStackTrace();
-                return Response.status(HttpResponseCodes.SC_BAD_REQUEST).build();
+                return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
             }
         }else{
-            return Response.status(HttpResponseCodes.SC_BAD_REQUEST).build();
+            return Response.status(HttpResponseCodes.SC_INTERNAL_SERVER_ERROR).build();
         }
     }
 }
