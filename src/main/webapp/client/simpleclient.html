@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Client</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="jquery-3.1.0.min.js"></script>
+    </head>
+    <body>
+        <h1>Simple Client For Student System</h1>
+        <div id="status" ></div>
+        <div id="result" ></div>
+        
+        ID:<br>
+        <input type="text" id="id_field"><br>
+        Name:<br>
+        <input type="text" id="name_field"><br>
+
+        <button onclick="getData()">GET</button>
+        <button onclick="postData()">POST</button>
+        <button onclick="putData()">PUT</button>
+        <button onclick="deleteData()">DELETE</button>
+        
+        <script type="text/javascript">
+            
+            function getData()
+            {
+                $.ajax({
+                    url: '../rest/student/' + $("#id_field").val(),
+                    type: 'GET',
+                    success: function(data,status,response) {
+                       var object = response.responseJSON;
+                       document.getElementById("result").innerHTML= JSON.stringify(object);
+                    },
+                    error: function(xhr, status, text) {
+                       document.getElementById("result").innerHTML=text;
+                    }
+                  });
+            }
+                        
+            function postData()
+            {
+                    var requestData = { "student":{
+                                        id: $("#id_field").val(),
+                                        firstName: $("#name_field").val(),
+                                        lastName: $("#name_field").val(),
+                                    }
+                                }
+                  $.ajax({
+                    url: '../rest/student/new',
+                    type: 'POST',
+                    data: JSON.stringify(requestData),
+                    contentType:'application/json; charset=UTF-8',
+                    success: function(response,status) {
+                        document.getElementById("result").innerHTML= status;
+                    },
+                    error: function(xhr, status, text) {
+                        document.getElementById("result").innerHTML=text;
+                    }
+                  });
+                 
+            }
+                        
+            function deleteData()
+            {
+                document.getElementById("result").innerHTML="delete data";
+            }
+                        
+            function putData()
+            {
+                document.getElementById("result").innerHTML="put data";
+            }
+        </script>
+        
+    </body>
+</html>
