@@ -45,7 +45,12 @@ public class StudentRegisterTest {
        }
        System.out.println("Testing add student method");
 
-       Student student = register.findStudent(2);
+       Student student = new Student();
+       try {
+           student = register.findStudent(2);
+       } catch (Exception e) {
+           Assert.fail("Finding a student failed");
+       }
        Assert.assertEquals("Student Id is wrong",2,student.getId());
    }
 
@@ -63,8 +68,13 @@ public class StudentRegisterTest {
         {
             Assert.fail("Add student failed");
         }
-        register.removeStudent(1);
-        Student student = register.findStudent(1);
+        Student student = new Student();
+        try {
+            register.removeStudent(1);
+            student = register.findStudent(1);
+        } catch (Exception e) {
+            Assert.fail("Finding a student failed");
+        }
         Assert.assertNull("student was not removed",student);
     }
 
@@ -82,7 +92,13 @@ public class StudentRegisterTest {
         {
             Assert.fail("Adding student failed");
         }
-        ArrayList<Integer> numbers = register.getAllRegistrationNumbers();
+        ArrayList<Integer> numbers =new ArrayList<Integer>();
+        try {
+            numbers = register.getAllRegistrationNumbers();
+            Student student = register.findStudent(1);
+        } catch (Exception e) {
+            Assert.fail("Finding a student failed");
+        }
         ArrayList<Integer> expected = new ArrayList<Integer>();
         expected.add(1);
         expected.add(2);

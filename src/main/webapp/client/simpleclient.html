@@ -15,19 +15,21 @@ and open the template in the editor.
         <h1>Simple Client For Student System</h1>
         <div id="status" ></div>
         <div id="result" ></div>
-        
+
         ID:<br>
         <input type="text" id="id_field"><br>
-        Name:<br>
-        <input type="text" id="name_field"><br>
-
+        First Name:<br>
+        <input type="text" id="fname_field"><br>
+        Last Name:<br>
+        <input type="text" id="lname_field"><br>
+        <br>
         <button onclick="getData()">GET</button>
         <button onclick="postData()">POST</button>
         <button onclick="putData()">PUT</button>
         <button onclick="deleteData()">DELETE</button>
-        
+
         <script type="text/javascript">
-            
+
             function getData()
             {
                 $.ajax({
@@ -42,13 +44,13 @@ and open the template in the editor.
                     }
                   });
             }
-                        
+
             function postData()
             {
                     var requestData = { "student":{
                                         id: $("#id_field").val(),
-                                        firstName: $("#name_field").val(),
-                                        lastName: $("#name_field").val(),
+                                        firstName: $("#fname_field").val(),
+                                        lastName: $("#lname_field").val(),
                                     }
                                 }
                   $.ajax({
@@ -63,19 +65,44 @@ and open the template in the editor.
                         document.getElementById("result").innerHTML=text;
                     }
                   });
-                 
             }
-                        
+
             function deleteData()
             {
-                document.getElementById("result").innerHTML="delete data";
+                $.ajax({
+                    url: '../rest/student/' + $("#id_field").val(),
+                    type: 'DELETE',
+                    success: function(data,status,response) {
+                       document.getElementById("result").innerHTML= status;
+                    },
+                    error: function(xhr, status, text) {
+                       document.getElementById("result").innerHTML=text;
+                    }
+                  });
             }
-                        
+
             function putData()
             {
-                document.getElementById("result").innerHTML="put data";
+                 var requestData = { "student":{
+                                        id: $("#id_field").val(),
+                                        firstName: $("#fname_field").val(),
+                                        lastName: $("#lname_field").val(),
+                                    }
+                                }
+                 $.ajax({
+                    url: '../rest/student/' + $("#id_field").val(),
+                    type: 'PUT',
+                    data: JSON.stringify(requestData),
+                    contentType:'application/json; charset=UTF-8',
+                    success: function(response,status) {
+                        document.getElementById("result").innerHTML= status;
+                    },
+                    error: function(xhr, status, text) {
+                        document.getElementById("result").innerHTML=text;
+                    }
+                  });
             }
         </script>
-        
+
     </body>
 </html>
