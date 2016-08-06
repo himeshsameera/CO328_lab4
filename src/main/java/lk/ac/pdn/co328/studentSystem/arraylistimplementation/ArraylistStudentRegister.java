@@ -22,7 +22,7 @@ public class ArraylistStudentRegister extends StudentRegister
 
     // Remove a student from the system
     @Override
-    public void removeStudent(int regNo)
+    public void removeStudent(int regNo)throws Exception
     {
         for (int i = 0; i<studentList.size(); i++)
         {
@@ -35,7 +35,7 @@ public class ArraylistStudentRegister extends StudentRegister
 
     //Finds the student with the given registration number
     @Override
-    public Student findStudent(int regNo)
+    public Student findStudent(int regNo)throws Exception
     {
         for (int i = 0; i<studentList.size(); i++)
         {
@@ -49,27 +49,27 @@ public class ArraylistStudentRegister extends StudentRegister
 
     // Cleans all the data from the student register
     @Override
-    public void reset()
+    public void reset()throws Exception
     {
         studentList = null;
     }
 
     // Finds all the students that has the given name as a part of their name.
     @Override
-    public ArrayList<Student> findStudentsByName(String name)
+    public ArrayList<Student> findStudentsByName(String name)throws Exception
     {
         ArrayList<Student> students = new ArrayList<Student>();
         for (int i = 0; i<studentList.size(); i++)
         {
             if(studentList.get(i).getFirstName().contains(name))
             {
-                studentList.add(studentList.get(i));
+                students.add(studentList.get(i));
             }
-			
-			
+
+
             if(studentList.get(i).getLastName().contains(name))
             {
-                studentList.add(studentList.get(i));
+                students.add(studentList.get(i));
             }
         }
         return students;
@@ -77,7 +77,7 @@ public class ArraylistStudentRegister extends StudentRegister
 
     //Gives all the registration numbers of the students.
     @Override
-    public ArrayList<Integer> getAllRegistrationNumbers()
+    public ArrayList<Integer> getAllRegistrationNumbers()throws Exception
     {
         ArrayList<Integer> regNumbers = new ArrayList<Integer>();
         for (Student student: studentList)
